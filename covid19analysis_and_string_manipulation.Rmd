@@ -1,5 +1,5 @@
 ---
-title: "Assignment 2"
+title: "Covid-19 Analysis and String Manipulation"
 author: "Muhammed Taha Yilmaz"
 date: "17 01 2022"
 output: word_document

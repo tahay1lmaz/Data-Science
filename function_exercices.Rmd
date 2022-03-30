@@ -1,5 +1,5 @@
 ---
-title: "Assignment 3"
+title: "Function Exercises"
 author: "Muhammed Taha Yilmaz"
 date: "17 01 2022"
 output: word_document
