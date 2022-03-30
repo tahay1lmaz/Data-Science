@@ -1,0 +1,91 @@
+---
+title: "Assignment 2"
+author: "Muhammed Taha Yilmaz"
+date: "17 01 2022"
+output: word_document
+---
+```{r include=FALSE}
+library(tidyverse)
+set.seed(2017556069)
+library(knitr)
+```
+
+# Assignment 2 Part 1
+
+```{r include=FALSE}
+mydata <- read_csv2("C:/Users/mtaha/desktop/covid-data-20200.csv")
+my_data<-mydata[sample(nrow(mydata), 1000),]
+my_data
+```
+## Q1 : Calculate the five-number summary statistics (minimum-Q1-median-Q3-maximum) of covid-19 daily new cases for each country within each month. (you can use quantile() function to get the quartiles)
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+answer1 <- my_data %>% group_by(location, month) %>% 
+  summarize(
+    min = min(new_cases,na.rm = TRUE),
+    Q1 = quantile(new_cases, 0.25,na.rm = TRUE),
+    Q2 = quantile(new_cases, 0.50,na.rm = TRUE),
+    Q3 = quantile(new_cases, 0.75,na.rm = TRUE),
+    max = max(new_cases,na.rm = TRUE)
+    )
+kable(head(answer1,10))
+```
+## Q2 : Find the highest daily cases and deaths separately for each country. 
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+answer2 <- my_data %>% group_by(location) %>%
+  summarize(
+    max_case = max(new_cases), 
+    max_death = max(new_deaths, na.rm = TRUE)
+    )
+answer2 <- arrange(answer2,desc(max_case))
+kable(head(answer2,10))
+```
+## Q3 : Identify the month in which the mean daily cases is the highest for each country.
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+answer3 <- my_data %>% group_by(location,month) %>%
+  summarize(
+    Mean_of_dailycases = mean(new_cases, na.rm=TRUE)
+  )
+answer3 <-filter(answer3, Mean_of_dailycases == max(Mean_of_dailycases))
+kable(head(answer3,10))
+```
+## Q4 : Select 3 country and plot the distribution of daily cases by month. Use location as clusters (i.e., color=location) to show the difference between countries.
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Figure 1. The Distribution of daily cases by chosen location(United Kingdom","Italy","Switzerland").'}
+ggplot(data=filter(my_data, location %in% c("United Kingdom","Italy","Switzerland"))) +
+  geom_boxplot(mapping=aes(x=as.factor(month), y=new_cases, color=location))
+```
+
+
+# Assignment 2 Part 2
+
+```{r include=FALSE, message=FALSE, warning=FALSE}
+words1 <- sample(sentences,100)
+words2 <-str_split(words1,boundary("word")) %>%
+  simplify()
+words2 <- unique(words2)
+```
+
+## Q1 : Find words which are starting with “a” and ending with “e”.
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+kable(words2[str_detect(words2,"^a.+e$")])
+```
+
+## Q2 : Calculate the number of words which have more than 3 vowels.
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+sum(str_count(words2,"[aeiou]")>3)
+kable(words2[str_count(words2,"[aeiou]")>3])
+```
+
+## Q3 : List the five longest word in your data
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+new_data <- tibble(words2, longest=(str_length(words2)))
+long <- arrange(new_data,desc(longest))
+kable(head(long,5))
+```
+
+## Q4 : Try to find word(s) which contain any of these words: age, any, day, exp, her, pro, the.
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+find_words<-c("age","any","day","exp","her","pro","the")
+find_words2<-str_c(find_words, collapse = "|")
+kable(str_subset(words2,find_words2))
+```
+

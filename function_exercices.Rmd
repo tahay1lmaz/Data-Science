@@ -1,0 +1,60 @@
+---
+title: "Assignment 3"
+author: "Muhammed Taha Yilmaz"
+date: "17 01 2022"
+output: word_document
+---
+```{r include=FALSE}
+library(tidyverse)
+set.seed(2017556069)
+library(knitr)
+```
+
+## Q1 : Write a function that finds a prime number(s) given a set of numbers. Your function also provides prime factors of non-prime numbers. The function you will write should return the prime number(s) given in this vector and the non-prime number(s) with their prime factors.
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ty_func1<-function() {
+  nums<-c(89,107,597,931,1083)
+  i<-2
+  prime<-c()
+  non_prime<-c()
+  
+  for(x in nums) {
+    if (x == 2) {
+      prime<-c(prime,x)
+    } else if (any(x %% 2:(x-1) == 0)) {
+      non_prime<-c(non_prime,x)
+      non_prime <- c(non_prime, paste0("["))
+      while(x >= i){
+        if(! x %% i) {
+          non_prime <- c(non_prime, i)
+          x <- x/i
+          i <- i - 1
+        }
+        i <- i + 1
+      }
+      non_prime <- c(non_prime, paste0("]"))
+      i<-2
+    }
+    else {
+      prime<-c(prime,x)  }
+  }
+  cat("Prime numbers:", prime, "\n")
+  cat("Non-prime numbers:", non_prime)
+}
+ty_func1()
+```
+
+## Q2 : Write a function that finds the letter numbers of all words in a given text and sorts the text according to those numbers from words with few letters to words with many letters. Sort the words containing the same number of letters alphabetically.
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ty_func2<-function(){
+  words1 <- sample(sentences,6)
+  words2 <-str_split(words1,boundary("word")) %>%
+    simplify()
+  words2<-tolower(words2)
+  ty<-str_sort(words2)
+  ty2<-ty[order(str_count(ty,"."))]
+  ty3<-str_c(ty2, collapse =" ")
+  kable(ty3)
+}
+ty_func2()
+```
